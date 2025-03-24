@@ -8,7 +8,7 @@ const port = 5000;
 const server = Express();
 
 server.use(Cors({
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'https://intelli-searches.netlify.app'],
     credentials: true
 }));
 server.use(bodyParser.json({ limit: '10mb' }));
