@@ -48,7 +48,9 @@ const ContextProvider = (props) => {
         try {
           const usernameEncoded = encodeURIComponent(username);
           const chatEncoded = encodeURIComponent(finalPrompt);
-          const url = `http://localhost:5000/update_chat_data?username=${usernameEncoded}&chat=${chatEncoded}`;
+          // const url = `http://localhost:5000/update_chat_data?username=${usernameEncoded}&chat=${chatEncoded}`;
+          const url = `https://intellisearch-project.onrender.com/update_chat_data?username=${usernameEncoded}&chat=${chatEncoded}`;
+
 
           const apiResponse = await fetch(url, {
             method: "GET",
@@ -148,7 +150,8 @@ const ContextProvider = (props) => {
       const fetchChatData = async () => {
         try {
           const response = await fetch(
-            `http://localhost:5000/get_chat_data?username=${encodeURIComponent(username)}`
+            // `http://localhost:5000/get_chat_data?username=${encodeURIComponent(username)}`
+             `https://intellisearch-project.onrender.com/get_chat_data?username=${encodeURIComponent(username)}`
           );
 
           if (!response.ok) throw new Error(`Error fetching chat data: ${response.statusText}`);
