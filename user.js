@@ -1,9 +1,15 @@
 import { MongoClient } from "mongodb";
+<<<<<<< HEAD
 import dotenv from "dotenv";
 
 dotenv.config(); // Load environment variables
 
 const uri = process.env.MONGO_URI;
+=======
+//const uri="mongodb+srv://amarjeet34537:DmH9JrGr46K5Qwhv@cluster0.2cp2m.mongodb.net/"
+// const uri="mongodb+srv://amarjeet34537:DmH9JrGr46K5Qwhv@cluster0.2cp2m.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+const uri="mongodb+srv://prakashrai11:prakashrai590@cluster0.zct5z60.mongodb.net/User?retryWrites=true&w=majority&appName=Cluster0"
+>>>>>>> 861199577a56b7ad8d5460a82c2e0a8ba6b9f527
 const client = new MongoClient(uri, {
     serverSelectionTimeoutMS: 5000 // 5 seconds
 });
@@ -49,4 +55,8 @@ export async function get_chat_data(req, res) {
         console.log(e);
         res.send({ 'message': JSON.stringify(e) });
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 861199577a56b7ad8d5460a82c2e0a8ba6b9f527
 }
