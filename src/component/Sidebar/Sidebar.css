@@ -1,22 +1,30 @@
+/* Default Sidebar - Hidden by Default */
 .sidebar {
-  min-height: 100vh;
-  display: inline-flex;
+  position: fixed;
+  top: 0;
+  left: -250px;  /* Hide it initially */
+  width: 250px;
+  height: 100vh;
+  background-color: #3e8ff2;
+  display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: #3e8ff2;
-  padding: 25px 15px;
+  padding: 25px 10px;
+  transition: left 0.3s ease-in-out;
+  z-index: 1000;
 }
 
+/* Show Sidebar when toggled */
+.sidebar.open {
+  left: 0;
+}
+
+/* Sidebar Images */
 .sidebar img {
   width: 20px;
 }
 
-.menu {
-  display: block;
-  margin-left: 10px;
-  cursor: pointer;
-}
-
+/* New Chat Button */
 .new-chat {
   margin-top: 50px;
   display: flex;
@@ -30,38 +38,35 @@
   cursor: pointer;
 }
 
-/* Recent section container */
+/* Recent Section */
 .recent {
-  display: flex;
   flex-direction: column;
   margin-top: 30px;
-  overflow-y: auto; /* Enable vertical scrolling */
-  max-height: 300px; /* Limit the height to a fixed value */
-  padding-right: 10px; /* Add padding for scroll visibility */
+  overflow-y: auto;
+  max-height: 300px;
+  padding-right: 10px;
 }
 
-/* Scrollbar styling */
+/* Scrollbar Styling */
 .recent::-webkit-scrollbar {
-  width: 8px; /* Width of the scrollbar */
+  width: 8px;
 }
 
 .recent::-webkit-scrollbar-thumb {
-  background: #ccc; /* Color of the scrollbar thumb */
-  border-radius: 5px; /* Rounded edges for the thumb */
+  background: #ccc;
+  border-radius: 5px;
 }
 
-.recent::-webkit-scrollbar-thumb:hover {
-  background: #aaa; /* Darker shade on hover */
-}
-
+/* Recent Title */
 .recent-title {
   margin-bottom: 20px;
   font-weight: bold;
 }
 
+/* Recent Entry */
 .recent-entry {
   display: flex;
-  align-items: start;
+  align-items: center;
   gap: 10px;
   padding: 10px;
   border-radius: 50px;
@@ -73,107 +78,36 @@
   background-color: #e2e6eb;
 }
 
-/* Bottom section */
+/* Bottom Section */
 .sidebar .bottom {
   display: flex;
   flex-direction: column;
 }
 
-.sidebar .bottom-item {
-  padding-right: 10px;
+/* Hamburger Button */
+.hamburger {
+  background: none;
+  border: none;
+  font-size: 24px;
   cursor: pointer;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  color: white;
+  z-index: 1001;
 }
 
-/* Responsive for smaller screens */
+/* --------------------- MOBILE RESPONSIVENESS --------------------- */
 @media (max-width: 600px) {
+  .hamburger {
+    display: block;
+  }
+
   .sidebar {
-    display: none;
+    left: -100%;
+  }
+
+  .sidebar.mobile-show {
+    left: 0;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* .sidebar {
-    min-height: 100vh;
-    display:inline-flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background-color: #3e8ff2;
-    padding: 25px 15px;
-  }
-  
-  .sidebar img {
-    width: 20px;
-  }
-  
-  .menu {
-    display: block;
-    margin-left: 10px;
-    cursor: pointer;
-  }
-  
-   .new-chat {
-    margin-top: 50px;
-    display:flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 15px;
-    background-color: #e6eaf1;
-    border-radius: 50px;
-    font-size: 14px;
-    color: gray;
-    cursor: pointer;
-  }
-  
-   .recent {
-    display: flex;
-    flex-direction: column;
-    animation: fedeIn 1.5;
-  }
-  
-  .recent-title {
-    margin-top: 30px;
-    margin-bottom: 20px;
-  }
-  
-  .recent-entry {
-    display: flex;
-    align-items:start;  
-    gap: 10px;
-    padding: 10px;
-    padding-right: 40px;
-    border-radius: 50px;
-    color: #282828;
-    cursor: pointer;
-  }
-  
-  .recent-entry:hover {
-    background-color: #e2e6eb;
-  }
-  
-  .sidebar .bottom {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .sidebar .bottom-item {
-    padding-right: 10px;
-    cursor: pointer;
-  }
-  @media (max-width:600px){
-    .sidebar{
-      display: none;
-    }
-  }
-    */

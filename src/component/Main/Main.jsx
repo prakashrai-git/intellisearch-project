@@ -152,29 +152,30 @@ const Main = () => {
       <div className="main_container">
         {!showResult ? (
           <>
-            <div className="greet">
+            <div className="greet" id="center-text">
               <p><span>Hello</span></p>
               <p>How can I help you today?</p>
             </div>
-            <div className="cards">
-              <div className="card">
-                <p>Suggest beautiful places for an upcoming road trip</p>
-                <img src={assets.compass_icon} alt='Compass' />
-              </div>
-              <div className="card">
-                <p>Briefly summarize this concept: urban planning</p>
-                <img src={assets.bulb_icon} alt='Bulb' />
-              </div>
-              <div className="card">
-                <p>Brainstorm team bonding activities for our work retreat</p>
-                <img src={assets.message_icon} alt='Message' />
-              </div>
-              <div className="card">
-                <p>Improve the readability of the following code</p>
-                <img src={assets.code_icon} alt='Code' />
-              </div>
-              <br />
-            </div>
+            <div className="cards" id="card">
+  {[
+    "Suggest beautiful places for an upcoming road trip",
+    "Briefly summarize this concept: urban planning",
+    "Brainstorm team bonding activities for our work retreat",
+    "Improve the readability of the following code"
+  ].map((text, index) => (
+    <div key={index} className="card" onClick={() => {
+      setInput(text); // Set the input text
+      onSent(text, isAuthenticated ? user.name : ""); // Send the query
+    }}>
+      <p>{text}</p>
+      <img 
+        src={[assets.compass_icon, assets.bulb_icon, assets.message_icon, assets.code_icon][index]} 
+        alt="Icon" 
+      />
+    </div>
+  ))}
+</div>
+
           </>
         ) : (
           <div className='result'>

@@ -12,10 +12,15 @@ const ContextProvider = (props) => {
   const [resultData, setResultData] = useState("");
   const [videos, setVideos] = useState([]);
 
-  const delayPara = (index, nextWord) => {
-    setTimeout(() => {
-      setResultData((prev) => prev + nextWord);
-    }, 75 * index);
+  const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+  const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
+  
+  const delayPara = (text) => {
+    text.split(" ").forEach((word, index) => {
+      setTimeout(() => {
+        setResultData((prev) => prev + `${word} `);
+      }, 75 * index);
+    });
   };
 
   const newChat = () => {
@@ -31,31 +36,23 @@ const ContextProvider = (props) => {
     setShowResult(true);
     setResultData("");
     setVideos([]);
-    let response;
-
+    
     try {
       const finalPrompt = prompt || input;
       if (!finalPrompt) return;
 
       setPrevPrompts((prev) => [...prev, finalPrompt]);
-      response = await runChat(finalPrompt);
+      const response = await runChat(finalPrompt);
       setRecentPrompt(finalPrompt);
       await searchVideos(finalPrompt);
 
-      console.log(username, finalPrompt);
-
       if (username) {
+        const usernameEncoded = encodeURIComponent(username);
+        const chatEncoded = encodeURIComponent(finalPrompt);
+        
         try {
-          const usernameEncoded = encodeURIComponent(username);
-          const chatEncoded = encodeURIComponent(finalPrompt);
-          // const url = `http://localhost:5000/update_chat_data?username=${usernameEncoded}&chat=${chatEncoded}`;
-          const url = `https://intellisearch-project.onrender.com/update_chat_data?username=${usernameEncoded}&chat=${chatEncoded}`;
-
-
-          const apiResponse = await fetch(url, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          });
+          const url = `${BASE_URL}/update_chat_data?username=${usernameEncoded}&chat=${chatEncoded}`;
+          const apiResponse = await fetch(url, { method: "GET" });
 
           if (!apiResponse.ok) {
             throw new Error(`Error updating chat data: ${apiResponse.statusText}`);
@@ -65,24 +62,18 @@ const ContextProvider = (props) => {
         }
       }
 
+      // Clean and format response
       const cleanedResponse = response
         .replace(/\*\*/g, "")
         .replace(/\*/g, "")
         .replace(/\s+/g, " ")
-        .trim();
-
-      const formattedResponse = cleanedResponse
+        .trim()
         .split(". ")
         .map((sentence) => sentence.trim())
         .filter(Boolean)
         .join(".<br><br>");
 
-      setResultData(formattedResponse);
-
-      const words = formattedResponse.split(" ");
-      words.forEach((word, index) => {
-        delayPara(index, `${word}${index < words.length - 1 ? " " : ""}`);
-      });
+      delayPara(cleanedResponse);
     } catch (error) {
       console.error("Error processing response:", error);
       setResultData("Sorry, something went wrong.");
@@ -93,31 +84,30 @@ const ContextProvider = (props) => {
   };
 
   const searchVideos = async (query) => {
-    const apiKey = "AIzaSyDPR9IStKyzn3jdSa1IsqXBtZalERRHpj0";
-    const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&key=${apiKey}&maxResults=5`;
-
     try {
+      const searchUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&key=${YOUTUBE_API_KEY}&maxResults=5`;
       const searchResponse = await fetch(searchUrl);
       const searchData = await searchResponse.json();
-
-      if (searchData.items?.length) {
-        const videoIds = searchData.items.map((item) => item.id.videoId).join(",");
-        const videoDetailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoIds}&key=${apiKey}`;
-        const videoDetailsResponse = await fetch(videoDetailsUrl);
-        const videoDetailsData = await videoDetailsResponse.json();
-
-        const videosWithComments = searchData.items.map((item) => {
-          const stats = videoDetailsData.items.find((video) => video.id === item.id.videoId);
-          return {
-            ...item,
-            commentCount: stats?.statistics?.commentCount || 0,
-          };
-        });
-
-        setVideos(videosWithComments.sort((a, b) => b.commentCount - a.commentCount));
-      } else {
+      
+      if (!searchData.items?.length) {
         setVideos([]);
+        return;
       }
+
+      const videoIds = searchData.items.map((item) => item.id.videoId).join(",");
+      const videoDetailsUrl = `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoIds}&key=${YOUTUBE_API_KEY}`;
+      const videoDetailsResponse = await fetch(videoDetailsUrl);
+      const videoDetailsData = await videoDetailsResponse.json();
+
+      const videosWithComments = searchData.items.map((item) => {
+        const stats = videoDetailsData.items.find((video) => video.id === item.id.videoId);
+        return {
+          ...item,
+          commentCount: stats?.statistics?.commentCount || 0,
+        };
+      });
+
+      setVideos(videosWithComments.sort((a, b) => b.commentCount - a.commentCount));
     } catch (error) {
       console.error("Error fetching YouTube videos:", error);
       setVideos([]);
@@ -149,10 +139,8 @@ const ContextProvider = (props) => {
     useEffect(() => {
       const fetchChatData = async () => {
         try {
-          const response = await fetch(
-            // `http://localhost:5000/get_chat_data?username=${encodeURIComponent(username)}`
-             `https://intellisearch-project.onrender.com/get_chat_data?username=${encodeURIComponent(username)}`
-          );
+          const url = `${BASE_URL}/get_chat_data?username=${encodeURIComponent(username)}`;
+          const response = await fetch(url);
 
           if (!response.ok) throw new Error(`Error fetching chat data: ${response.statusText}`);
           const data = await response.json();

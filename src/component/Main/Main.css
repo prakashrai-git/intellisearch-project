@@ -1,10 +1,4 @@
-/* .main {
-    flex: 1;
-    background-image: url('https://img.freepik.com/free-vector/abstract-blue-light-pipe-speed-zoom-black-background-technology_1142-9722.jpg');
-    min-height: 100vh;
-    padding-bottom: 15vh;
-    position: relative;
-  } */
+
   .main {
     flex: 1;
     background-image: url('https://img.freepik.com/free-vector/abstract-blue-light-pipe-speed-zoom-black-background-technology_1142-9722.jpg');
@@ -221,6 +215,63 @@ h4{
     }
 
    }
-   
 
-/* You can add any additional styles for your login/logout buttons, nav, etc., below this */
+   /* Hide the card on small screens */
+   @media screen and (max-width: 768px) {
+    /* Hide cards on mobile */
+    .cards {
+      display: none;
+    }
+
+    .result {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start; /* Align text to the left */
+      justify-content: flex-start; /* Ensure it starts from the top */
+      text-align: left; /* Prevent center alignment */
+      padding: 10px;
+    }
+  
+    .result-title {
+      align-items: flex-start;
+      text-align: left;
+      width: 100%;
+    }
+  
+    .result-data {
+      text-align: left;
+    }
+  
+    /* Center greet message */
+    .greet {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      height: 40vh; /* Adjust for perfect centering */
+      font-size: 56px;
+      margin: 0; /* Remove margins */
+    }
+  
+    /* Position search box right below greet message */
+    .main-bottom {
+      position: absolute;
+      left: 0px;
+    }
+  
+    /* Keep search box width manageable */
+    .search-box {
+      width: 100%;
+      
+    }
+  
+    /* Remove any extra scrolling */
+    .main {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  }
+  

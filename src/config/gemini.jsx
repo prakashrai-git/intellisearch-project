@@ -4,7 +4,9 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 
-const apiKey = "AIzaSyBrXB-sYiyHbjLvKd9lKJZhjwWCNJM-heM";
+// Load the API key from .env
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
 const genAI = new GoogleGenerativeAI(apiKey);
 
 const model = genAI.getGenerativeModel({
@@ -21,7 +23,6 @@ const generationConfig = {
 
 async function runChat(prompt) {
   try {
-    // Create the chat session
     const chatSession = await model.startChat({
       generationConfig,
       safetySettings: [
@@ -34,16 +35,13 @@ async function runChat(prompt) {
           threshold: HarmBlockThreshold.ALLOW_MEDIUM,
         },
       ],
-
       history: [],
     });
 
-  
     const result = await chatSession.sendMessage(prompt);
-    const ResponseText=await result.response.text();
-    
-    return ResponseText;;
+    const ResponseText = await result.response.text();
 
+    return ResponseText;
   } catch (error) {
     console.error("Error:", error);
     return "Sorry, something went wrong.";
