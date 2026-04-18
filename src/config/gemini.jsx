@@ -26,7 +26,7 @@ const modelNames = [
   "gemini-1.0-pro-latest",
   "gemini-pro",
   "gemini-1.5-flash",
-  "gemini-1.5-pro"
+  "gemini-1.5-pro",
   "gemini-3-flash-preview",
   
 ];
