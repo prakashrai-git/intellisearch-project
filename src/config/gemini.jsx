@@ -4,50 +4,14 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 
+// Load the API key from .env
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
 const genAI = new GoogleGenerativeAI(apiKey);
 
-// Function to list available models (for debugging)
-async function listAvailableModels() {
-  try {
-    const models = await genAI.listModels();
-    console.log("Available models:", models);
-    return models;
-  } catch (error) {
-    console.error("Error listing models:", error);
-    return [];
-  }
-}
-
-// Try multiple model names in sequence
-const modelNames = [
-  "gemini-1.5-flash-latest",
-  "gemini-1.5-pro-latest", 
-  "gemini-1.0-pro-latest",
-  "gemini-pro",
-  "gemini-1.5-flash",
-  "gemini-1.5-pro",
-  "gemini-3-flash-preview",
-  
-];
-
-let model = null;
-
-async function initializeModel() {
-  for (const modelName of modelNames) {
-    try {
-      const testModel = genAI.getGenerativeModel({ model: modelName });
-      // Test if model works
-      await testModel.generateContent("test");
-      model = testModel;
-      console.log(`Successfully initialized model: ${modelName}`);
-      return model;
-    } catch (error) {
-      console.log(`Model ${modelName} not available:`, error.message);
-    }
-  }
-  throw new Error("No available Gemini models found");
-}
+const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
+});
 
 const generationConfig = {
   temperature: 1,
@@ -59,11 +23,6 @@ const generationConfig = {
 
 async function runChat(prompt) {
   try {
-    // Initialize model if not already done
-    if (!model) {
-      await initializeModel();
-    }
-    
     const chatSession = await model.startChat({
       generationConfig,
       safetySettings: [
@@ -80,25 +39,13 @@ async function runChat(prompt) {
     });
 
     const result = await chatSession.sendMessage(prompt);
-    const responseText = await result.response.text();
+    const ResponseText = await result.response.text();
 
-    return responseText;
+    return ResponseText;
   } catch (error) {
     console.error("Error:", error);
     return "Sorry, something went wrong.";
   }
 }
-
-// Optional: List models when the module loads
-listAvailableModels().then(models => {
-  if (models.length > 0) {
-    console.log("Models that support generateContent:");
-    models.forEach(model => {
-      if (model.supportedMethods?.includes('generateContent')) {
-        console.log(`- ${model.name}`);
-      }
-    });
-  }
-});
 
 export default runChat;
