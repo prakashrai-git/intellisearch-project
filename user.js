@@ -1,6 +1,6 @@
 import { MongoClient } from "mongodb";
 //const uri="mongodb+srv://amarjeet34537:DmH9JrGr46K5Qwhv@cluster0.2cp2m.mongodb.net/"
-const uri="mongodb+srv://amarjeet34537:DmH9JrGr46K5Qwhv@cluster0.2cp2m.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+const uri=process.env.MONGO_URI";
 const client = new MongoClient(uri, {
     serverSelectionTimeoutMS: 5000 // 5 seconds
 });
