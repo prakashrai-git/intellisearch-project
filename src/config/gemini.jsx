@@ -27,6 +27,7 @@ const modelNames = [
   "gemini-pro",
   "gemini-1.5-flash",
   "gemini-1.5-pro"
+  "gemini-3-flash-preview",
 ];
 
 let model = null;
