@@ -1,5 +1,4 @@
 import { MongoClient } from "mongodb";
-<<<<<<< HEAD
 import dotenv from "dotenv";
 
 dotenv.config(); // Load environment variables
@@ -50,8 +49,4 @@ export async function get_chat_data(req, res) {
         console.log(e);
         res.send({ 'message': JSON.stringify(e) });
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> 861199577a56b7ad8d5460a82c2e0a8ba6b9f527
 }
