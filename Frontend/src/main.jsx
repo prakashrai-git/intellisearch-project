@@ -12,11 +12,8 @@ const authConfig = {
 createRoot(document.getElementById('root')).render(
 <ContextProvider>
 <Auth0Provider
-    // domain="dev-w558astza2ur7okd.us.auth0.com"
     domain={authConfig.domain}
     clientId={authConfig.clientId}
-    // clientId="mBRJ3PvRYfCQdbNBc7OOXgcjzUkUyv1C"
-    
     authorizationParams={{
       redirect_uri: window.location.origin
     }}
