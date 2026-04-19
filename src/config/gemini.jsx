@@ -4,14 +4,18 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 
-// Load the API key from .env
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-
 const genAI = new GoogleGenerativeAI(apiKey);
 
-const model = genAI.getGenerativeModel({
-  model: "gemini-3-flash"
-});
+// ✅ ALL models (ordered by priority)
+const MODELS = [
+  "gemini-3-flash-preview", // experimental (likely fail)
+  "gemini-3-flash",         // may fail in v1beta
+  "gemini-2.5-flash-lite",  // may fail
+  "gemini-2.5-flash",       // may fail
+  "gemini-1.5-flash",       // ✅ stable
+  "gemini-1.5-pro"          // ✅ stable fallback
+];
 
 const generationConfig = {
   temperature: 1,
@@ -22,30 +26,47 @@ const generationConfig = {
 };
 
 async function runChat(prompt) {
-  try {
-    const chatSession = await model.startChat({
-      generationConfig,
-      safetySettings: [
-        {
-          category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-          threshold: HarmBlockThreshold.BLOCK_HIGH,
-        },
-        {
-          category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-          threshold: HarmBlockThreshold.ALLOW_MEDIUM,
-        },
-      ],
-      history: [],
-    });
+  for (let modelName of MODELS) {
+    try {
+      console.log("Trying model:", modelName);
 
-    const result = await chatSession.sendMessage(prompt);
-    const ResponseText = await result.response.text();
+      const model = genAI.getGenerativeModel({
+        model: modelName,
+      });
 
-    return ResponseText;
-  } catch (error) {
-    console.error("Error:", error);
-    return "Sorry, something went wrong.";
+      const chatSession = await model.startChat({
+        generationConfig,
+        safetySettings: [
+          {
+            category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+            threshold: HarmBlockThreshold.BLOCK_HIGH,
+          },
+          {
+            category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+            threshold: HarmBlockThreshold.ALLOW_MEDIUM,
+          },
+        ],
+        history: [],
+      });
+
+      const result = await chatSession.sendMessage(prompt);
+      const text = result.response.text();
+
+      // ✅ extra safety: avoid empty response
+      if (!text || text.trim() === "") {
+        throw new Error("Empty response");
+      }
+
+      console.log("✅ Working model:", modelName);
+      return text;
+
+    } catch (error) {
+      console.warn("❌ Failed model:", modelName, error.message);
+      continue; // try next model
+    }
   }
+
+  return "All models failed. Try again later.";
 }
 
 export default runChat;
