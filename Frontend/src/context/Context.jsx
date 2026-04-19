@@ -12,7 +12,7 @@ const ContextProvider = (props) => {
   const [resultData, setResultData] = useState("");
   const [videos, setVideos] = useState([]);
 
-  const BASE_URL ="http://localhost:5001";
+  const BASE_URL = import.meta.env.VITE_BACKEND_URL;
   const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
   
   // Track if chat data has been fetched to prevent infinite calls
